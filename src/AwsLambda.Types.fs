@@ -58,83 +58,85 @@ type LambdaContext =
   }
   
 module APIGateway =
-  type ProxyRequestContext =
-    {
-      path: string
-      accountId: string
-      resourceId: string
-      stage: string
-      requestId: string
-      resourcePath: string
-      httpMethod: string
-      apiId: string
-      extendedRequestId: string
-      connectionId: string
-      connectionAt: string
-      domainName: string
-      domainPrefix: string
-      eventType: string
-      messageId: string
-      routeKey: string      
-      operationName: string
-      error: string
-      integrationLatency: string
-      messageDirection: string
-      requestTime: string
-      requestTimeEpoch: float
-      status: string
-    }
-  
-  type ProxyRequest =
-    { resource: string
-      path: string
-      httpMethod: string
-      headers: obj
-      multiValueHeaders: obj
-      queryStringParameters: obj
-      multiValueQueryStringParameters: obj
-      pathParameters: obj
-      stageVariables: obj
-      requestContext: ProxyRequestContext
-      body: string
-      isBase64Encoded: bool      
-    }
+  module Request =
+    type ProxyRequestContext =
+      {
+        path: string
+        accountId: string
+        resourceId: string
+        stage: string
+        requestId: string
+        resourcePath: string
+        httpMethod: string
+        apiId: string
+        extendedRequestId: string
+        connectionId: string
+        connectionAt: string
+        domainName: string
+        domainPrefix: string
+        eventType: string
+        messageId: string
+        routeKey: string      
+        operationName: string
+        error: string
+        integrationLatency: string
+        messageDirection: string
+        requestTime: string
+        requestTimeEpoch: float
+        status: string
+      }
     
-  type ProxyResponse =
-    { statusCode: int
-      headers: obj
-      multiValueHeaders: obj
-      body: string
-      isBase64Encoded: bool
-    }
-    static member Empty =
-      { statusCode = 500
-        headers = createObj [ ]
-        multiValueHeaders = createObj []
-        body = ""
-        isBase64Encoded = false
-      }    
+    type ProxyRequest =
+      { resource: string
+        path: string
+        httpMethod: string
+        headers: obj
+        multiValueHeaders: obj
+        queryStringParameters: obj
+        multiValueQueryStringParameters: obj
+        pathParameters: obj
+        stageVariables: obj
+        requestContext: ProxyRequestContext
+        body: string
+        isBase64Encoded: bool      
+      }
       
-  let getQueryParameter request = safeGetFromObj request.queryStringParameters
-  let getHeader request = safeGetFromObj request.headers
-  let getPathParameter request = safeGetFromObj request.pathParameters
-  let getStageVariable request = safeGetFromObj request.stageVariables
-  
-  type ResponseBodyType =
-    | OfNone
-    | OfJson of obj
-    | OfText of string
+    let getQueryParameter request = safeGetFromObj request.queryStringParameters
+    let getHeader request = safeGetFromObj request.headers
+    let getPathParameter request = safeGetFromObj request.pathParameters
+    let getStageVariable request = safeGetFromObj request.stageVariables
   
   module Response =
-    let ok responseBodyType =
+    type ProxyResponse =
+      { statusCode: int
+        headers: obj
+        multiValueHeaders: obj
+        body: string
+        isBase64Encoded: bool
+      }
+      static member Empty =
+        { statusCode = 500
+          headers = createObj [ ]
+          multiValueHeaders = createObj []
+          body = ""
+          isBase64Encoded = false
+        }    
+    
+    type BodyType<'a> =
+      | Json of 'a
+      | PlainText of string
+    
+    let ok bodyType =
       let contentType,body =
-        match responseBodyType with
-        | OfNone -> "text/plain",""
-        | OfJson value -> "application/json", JSON.stringify value
-        | OfText value -> "text/plain",value 
+        match bodyType with
+        | Json value -> "application/json", JSON.stringify value
+        | PlainText value -> "text/plain",value 
      
       { ProxyResponse.Empty with body = body
                                  headers = createObj [ "Content-Type" ==> contentType ]
                                  statusCode = 200 }
+    
+    let noContent =  { ProxyResponse.Empty with statusCode = 204 }
+    
     let internalError =
       { ProxyResponse.Empty with statusCode = 500 }
