@@ -1,0 +1,10 @@
+.DS_Store
+.fake
+.ionide
+.idea
+.cache
+cdk.out
+bin
+obj
+build
+
