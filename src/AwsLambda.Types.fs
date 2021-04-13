@@ -131,9 +131,10 @@ module APIGateway =
         | Json value -> "application/json", JSON.stringify value
         | PlainText value -> "text/plain",value 
      
-      { ProxyResponse.Empty with body = body
-                                 headers = createObj [ "Content-Type" ==> contentType ]
-                                 statusCode = 200 }
+      { ProxyResponse.Empty with
+          body = body
+          headers = createObj [ "Content-Type" ==> contentType ]
+          statusCode = 200 }
     
     let noContent =  { ProxyResponse.Empty with statusCode = 204 }
     
