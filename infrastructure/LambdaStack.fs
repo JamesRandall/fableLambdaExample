@@ -39,7 +39,7 @@ type LambdaStack(scope, id, props) as stack =
           Role = lambdaRole,
           Code = Code.FromAsset("./build/dist"),
           Handler = "App.echo",
-          MemorySize = 256.          
+          MemorySize = 128.          
         )
       ) |> applyStandardTags
     
