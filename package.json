@@ -1,0 +1,16 @@
+{
+  "name": "fablelambdaexample",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "dotnet fable ./src/AWSLambda.fsproj --outDir \"./build/fable\" && parcel build ./build/fable/App.js --target=node --bundle-node-modules --no-minify --out-dir ./build/dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JamesRandall/fableLambdaExample.git"
+  },
+  "author": "James Randall",
+  "license": "MIT",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.5"
+  }
+}

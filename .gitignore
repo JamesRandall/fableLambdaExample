@@ -7,4 +7,5 @@ cdk.out
 bin
 obj
 build
+node_modules
 
