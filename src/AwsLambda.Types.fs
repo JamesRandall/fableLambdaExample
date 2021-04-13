@@ -53,8 +53,7 @@ type LambdaContext =
     logGroupName: string
     logStreamName: string
     memoryLimitInMB: int
-    remainingTime: TimeSpan
-    getRemainingTimeInMillis : unit -> float
+    remainingTime: int
   }
   
 module APIGateway =
